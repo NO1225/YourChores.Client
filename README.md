@@ -1,0 +1,2 @@
+# YourChores.Client
+YourChores.Client
