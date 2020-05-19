@@ -23,7 +23,7 @@ export default function App() {
   // Switch navigation
   if (signedIn) {
     return (
-      <DrawerNavigation />
+      <DrawerNavigation setSignedIn={setSignedIn} />
     );
   }
   else {
