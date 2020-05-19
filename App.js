@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import DrawerNavigation from './routes/drawerNavigation'
+import LoginScreen from './screens/homeScreen/loginScreen'
+
 export default function App() {
+  const [signedIn, setSignedIn] = useState(false);
+
+
   const [weather, setWeather] = useState("loading...");
 
   const getWeather = async () => {
@@ -14,13 +20,18 @@ export default function App() {
     }
   }
 
-  getWeather();
+  // Switch navigation
+  if (signedIn) {
+    return (
+      <DrawerNavigation />
+    );
+  }
+  else {
+    return (
+      <LoginScreen setSignedIn={setSignedIn} />
+    )
+  }
 
-  return (
-    <View style={styles.container}>
-      <Text>{weather}</Text>
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
