@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { screens } from '../global/globalConstant';
+import { screens } from '../global/globalConstants';
 
 import TimelineScreen from '../screens/timelineScreens/timelineScreen'
 

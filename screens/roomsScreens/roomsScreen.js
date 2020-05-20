@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
-import {screens} from '../../global/globalConstant'
+import {screens} from '../../global/globalConstants'
 
 export default function RoomsScreen(props) {
   return(

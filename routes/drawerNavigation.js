@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
-import {screens} from '../global/globalConstant';
+import {screens} from '../global/globalConstants';
 
 import RoomsStack from './roomsStack';
 import SettingsStack from './settingsStack';
