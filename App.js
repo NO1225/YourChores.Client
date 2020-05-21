@@ -50,12 +50,6 @@ export default function App() {
       );
     }
     else {
-      // Test fonts
-      return (
-        <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-          <Text style={{ fontFamily:fonts.almaraiBold, fontSize:fontSizes.xxxLarge, color:colors.accent1 }}>تجربة</Text>
-        </View>
-      );
       return (
         <LoginScreen setSignedIn={setSignedIn} />
       )
