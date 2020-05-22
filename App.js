@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
-import { fonts, fontSizes, colors } from './global/styleConstants';
+import {screens} from './global/globalConstants';
 
-import DrawerNavigation from './routes/drawerNavigation'
-import LoginScreen from './screens/homeScreen/loginScreen'
+import SwitchNavigation from './routes/switchNavigation'
 
 export default function App() {
   // State to know if we have finnished loading all the setup before loading the components
   const [loaded, setLoaded] = useState(false);
 
-  // State to know if the user is autharized and signed in
-  const [signedIn, setSignedIn] = useState(false);
-
+  const [currentScreen, setCurrentScreen] = useState(screens.LoginScreen);
 
   // const [weather, setWeather] = useState("loading...");
 
@@ -44,28 +40,10 @@ export default function App() {
 
   if (loaded) {
     // Switch navigation
-    if (signedIn) {
-      return (
-        <DrawerNavigation setSignedIn={setSignedIn} />
-      );
-    }
-    else {
-      return (
-        <LoginScreen setSignedIn={setSignedIn} />
-      )
-    }
+    return (<SwitchNavigation currentScreen={currentScreen}/>)
   }
   else {
     return (<AppLoading startAsync={setup} onFinish={() => setLoaded(true)} />)
   }
 
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

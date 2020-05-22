@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 import { colors, fonts, fontSizes } from '../global/styleConstants'
+import { Value } from 'react-native-reanimated';
 
+/// props.style => text style
+/// props.inputContainerStyle => container style
 export default function CustomTextInput(props) {
 
     const styles = StyleSheet.create({

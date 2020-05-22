@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
+import {screens} from '../global/globalConstants';
+
 import {
     DrawerContentScrollView,
     DrawerItemList,
@@ -10,7 +12,7 @@ import {
 export default function CustomDrawer(props) {
 
     const logOut = () => {
-         props.setSignedIn(false);
+         props.setCurrentScreen(screens.LoginScreen);
     }
 
     return (

@@ -8,7 +8,12 @@ const screens = {
     AddChoreScreen: 'AddChoreScreen',
     RoomSettingsScreen: 'RoomSettingsScreen',
     SettingsScreen: 'SettingsScreen',
-    TimelineScreen: 'TimelineScreen'
+    TimelineScreen: 'TimelineScreen',
+
+    // SwitchNavigation
+    DrawerNavigationScreen:'DrawerNavigationScreen',
+    LoginScreen:'loginScreen',
+    SignupSCreen:'signupScreen',
 }
 
 export {screens}
