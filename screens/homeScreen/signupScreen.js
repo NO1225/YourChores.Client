@@ -7,6 +7,9 @@ import {
 
 import { colors, fonts, fontSizes } from '../../global/styleConstants'
 import { screens } from '../../global/globalConstants';
+import apiRoutes from '../../global/apiRoutes';
+import {post} from '../../global/apiCalls';
+
 
 import Button from '../../components/customButton';
 import TextInput from '../../components/customTextInput';
@@ -18,18 +21,31 @@ export default function SignupScreen(props) {
   const [passward, setPassward] = useState('');
   const [confirmPassward, setConfirmPassward] = useState('');
 
-  const hundleLogin = async () => {
+  const hundleRegister = async () => {
 
     if (passward !== confirmPassward) {
       console.log("Passward doesn't match")
       return;
     }
 
-    console.log({
-      userName,
-      email,
-      passward
+    var data = await post(apiRoutes.register,{
+      UserName:userName,
+      Email:email,
+      Passward: passward
     })
+
+    console.log(data)
+
+    if(data.success)
+    {
+      console.log("signed up")
+    }
+    else
+    {
+      var errors='';
+      data.errors.map(error=>{errors = errors + error + '\n'});
+      alert(errors);
+    }
 
     props.setCurrentScreen(screens.DrawerNavigationScreen);
   }
@@ -63,7 +79,7 @@ export default function SignupScreen(props) {
 
         </KeyboardAvoidingView>
         <View style={styles.buttonContainer}>
-          <Button title='تسجيل دخول' onPress={hundleLogin} />
+          <Button title='تسجيل دخول' onPress={hundleRegister} />
         </View>
       </View>
     </TouchableWithoutFeedback>

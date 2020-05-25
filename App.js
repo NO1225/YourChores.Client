@@ -12,8 +12,6 @@ export default function App() {
 
   const [currentScreen, setCurrentScreen] = useState(screens.LoginScreen);
 
-  // const [weather, setWeather] = useState("loading...");
-
   // Load the fonts 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -27,16 +25,6 @@ export default function App() {
   const setup = async () => {
     await loadFonts();
   }
-
-  // const getWeather = async () => {
-  //   if (weather == "loading...") {
-  //     var res = await fetch('http://192.168.8.101:5001/weatherforecast');
-
-  //     var data = await res.json();
-
-  //     setWeather(data[0].summary);
-  //   }
-  // }
 
   if (loaded) {
     // Switch navigation

@@ -7,6 +7,8 @@ import {
 
 import { colors, fonts, fontSizes } from '../../global/styleConstants';
 import {screens} from '../../global/globalConstants';
+import apiRoutes from '../../global/apiRoutes';
+import {post} from '../../global/apiCalls';
 
 import Button from '../../components/customButton';
 import TextInput from '../../components/customTextInput';
@@ -17,12 +19,26 @@ export default function LoginScreen(props) {
   const [passward, setPassward] = useState('');
 
   const hundleLogin = async ()=>{
-    console.log({
-      userName,
-      passward
+    var data = await post(apiRoutes.login,{
+      UserNameOrEmail:userName,
+      Passward: passward
     })
 
-    props.setCurrentScreen(screens.DrawerNavigationScreen);
+    console.log(data)
+
+    if(data.success)
+    {
+      console.log("Logged in")
+    }
+    else
+    {
+      var errors='';
+      data.errors.map(error=>{errors = errors + error + '\n'});
+      alert(errors);
+    }
+
+
+    //props.setCurrentScreen(screens.DrawerNavigationScreen);
   }
 
 
