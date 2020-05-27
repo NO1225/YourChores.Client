@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { AsyncStorage } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
-import {screens} from './global/globalConstants';
+import { screens } from './global/globalConstants';
+import { authPost } from './global/apiCalls';
+import apiRoutes from './global/apiRoutes';
 
 import SwitchNavigation from './routes/switchNavigation'
 
@@ -21,14 +24,26 @@ export default function App() {
     })
   }
 
+  // Check the current token, and if valid, go directly inside
+  const checkToken = async () => {
+    var data = await authPost(apiRoutes.tokenLogin, {});
+
+    if (data.success) {
+      await AsyncStorage.setItem("TOKEN", data.response.token);
+
+      setCurrentScreen(screens.DrawerNavigationScreen);
+    }
+  }
+
   // All the setups before rendering
   const setup = async () => {
     await loadFonts();
+    await checkToken();
   }
 
   if (loaded) {
     // Switch navigation
-    return (<SwitchNavigation currentScreen={currentScreen}/>)
+    return (<SwitchNavigation currentScreen={currentScreen} />)
   }
   else {
     return (<AppLoading startAsync={setup} onFinish={() => setLoaded(true)} />)

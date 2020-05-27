@@ -1,7 +1,6 @@
-import { Header } from "react-native/Libraries/NewAppScreen";
-import { NativeModules } from "react-native";
+import { AsyncStorage } from 'react-native'
 
-const get = async(apiRoute)=>{
+const get = async (apiRoute) => {
     var res = await fetch(apiRoute);
 
     var data = res.json();
@@ -9,8 +8,22 @@ const get = async(apiRoute)=>{
     return data;
 }
 
-const post = async(apiRoute,body)=>{
-    
+const authGet = async (apiRoute) => {
+    var token = await AsyncStorage.getItem("TOKEN");
+
+    var res = await fetch(apiRoute, {
+        method: "get",
+        headers: new Headers({
+            "Authorization": `Bearer ${token}`
+        })
+    })
+    var data = res.json();
+
+    return data;
+}
+
+const post = async (apiRoute, body) => {
+
     var res = await fetch(apiRoute, {
         method: "post",
         headers: new Headers({
@@ -24,7 +37,27 @@ const post = async(apiRoute,body)=>{
     return data;
 }
 
+const authPost = async (apiRoute, body) => {
+    var token = await AsyncStorage.getItem("TOKEN");
+    var res = await fetch(apiRoute, {
+        method: "post",
+        headers: new Headers({
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }),
+        body: JSON.stringify(body)
+    })
+
+    //console.log(res);
+
+    var data = res.json();
+
+    return data;
+}
+
 module.exports = {
     get,
-    post
+    authGet,
+    post,
+    authPost
 }

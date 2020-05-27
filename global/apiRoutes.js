@@ -4,5 +4,6 @@ module.exports = {
 
     register: API_URL + "api/auth/register",
     login: API_URL + "api/auth/login",
+    tokenLogin : API_URL + "api/auth/tokenlogin",
 
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,  View,
-  Image, 
+  Image, AsyncStorage,
   TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 
@@ -28,7 +28,11 @@ export default function LoginScreen(props) {
 
     if(data.success)
     {
-      console.log("Logged in")
+      console.log("Logged in");
+
+      await AsyncStorage.setItem("TOKEN",data.response.token);
+
+      props.setCurrentScreen(screens.DrawerNavigationScreen);
     }
     else
     {
@@ -38,7 +42,7 @@ export default function LoginScreen(props) {
     }
 
 
-    //props.setCurrentScreen(screens.DrawerNavigationScreen);
+    //
   }
 
 
