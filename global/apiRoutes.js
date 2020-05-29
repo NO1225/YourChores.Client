@@ -6,4 +6,8 @@ module.exports = {
     login: API_URL + "api/auth/login",
     tokenLogin : API_URL + "api/auth/tokenlogin",
 
+    getMyInfo: API_URL + "api/auth/getmyinfo",
+    changeName: API_URL + "api/auth/changename",
+    changePassward: API_URL + "api/auth/changepassward",
+
 }

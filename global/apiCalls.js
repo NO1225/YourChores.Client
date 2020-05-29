@@ -48,9 +48,15 @@ const authPost = async (apiRoute, body) => {
         body: JSON.stringify(body)
     })
 
-    //console.log(res);
+    console.log(res.status);
 
-    var data = res.json();
+    var data={};
+    if (res.status == "401") {
+        data.success = false;
+        data.errors = ["Unauthorized"];
+        return data;
+    }
+    data = res.json();
 
     return data;
 }

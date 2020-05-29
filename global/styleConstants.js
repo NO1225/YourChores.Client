@@ -42,6 +42,11 @@ const globalStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    text: {
+        fontFamily: fonts.almaraiRegular,
+        fontSize: fontSizes.regular,
+        color: colors.primaryFontColor,
+    }
 });
 
 // const images = {

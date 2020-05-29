@@ -1,7 +1,9 @@
 
 import React from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageBackground, StatusBar, useColorScheme } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+
+import {colors} from '../global/styleConstants'
 
 export default function CustomHeaderWithBack({ title, navigation }) {
 
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     },
     horizantalLine: {
         height: 5,
-        backgroundColor: '#8B7FF9',
+        backgroundColor: colors.accent1,
         marginBottom: 5
     }
 })
