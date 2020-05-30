@@ -15,7 +15,7 @@ export default function CustomKeyboardAvoidingView(props) {
     });
 
     return (
-        <KeyboardAvoidingView behavior='position' style={props.style}>
+        <KeyboardAvoidingView  behavior='position' {...props}>
             <View style={styles.inputsContainer}>
                 {props.children}
             </View>

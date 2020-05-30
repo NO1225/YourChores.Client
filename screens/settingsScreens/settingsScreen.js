@@ -7,6 +7,7 @@ import ApiRoutes from '../../global/apiRoutes';
 
 import EditableTextBlock from '../../components/editableTextBlock'
 import PasswardEditableTextBlock from '../../components/passwardEditableTextBlock'
+import { colors } from '../../global/styleConstants';
 
 export default function SettingsScreen(props) {
   const [loaded, setLoaded] = useState(false);
@@ -15,7 +16,7 @@ export default function SettingsScreen(props) {
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
 
-
+  // Get call to get the user info from the api,
   const getMyInfo = async () => {
     var data = await authGet(ApiRoutes.getMyInfo);
     if (data.success) {
@@ -26,6 +27,7 @@ export default function SettingsScreen(props) {
     }
   }
 
+  // Post call to change the first name
   const changeFirstName = async (value) => {
     var data = await authPost(ApiRoutes.changeName, {
       Firstname: value,
@@ -37,6 +39,7 @@ export default function SettingsScreen(props) {
     }
   }
 
+  // Post call to change the last name
   const changeLastName = async (value) => {
     var data = await authPost(ApiRoutes.changeName, {
       Firstname: firstName,
@@ -48,6 +51,7 @@ export default function SettingsScreen(props) {
     }
   }
 
+  // Post call to change the passward
   const changePassward = async (value) => {
     var data = await authPost(ApiRoutes.changePassward, value);
 
@@ -69,8 +73,6 @@ export default function SettingsScreen(props) {
         <EditableTextBlock title="الايميل:" value={email} />
         <EditableTextBlock title="اسم المستخدم:" value={userName} />
         <PasswardEditableTextBlock title="كلمة المرور:" editable onSave={changePassward} />
-
-
       </View>
     )
   else
@@ -82,6 +84,7 @@ export default function SettingsScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.primaryBackgroundColor
   },
 
 });

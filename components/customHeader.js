@@ -46,6 +46,5 @@ const styles = StyleSheet.create({
     horizantalLine: {
         height: 5,
         backgroundColor: colors.accent1,
-        marginBottom: 5
     }
 })

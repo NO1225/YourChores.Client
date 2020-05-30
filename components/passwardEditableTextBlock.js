@@ -5,10 +5,17 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import { globalStyles } from '../global/styleConstants';
 import TextInput from './customTextInput';
+import KeyboardAvoidingView from './customKeyboardAvoidingView';
 
+// TODO: Find a better keyboard avoiding view implementation
+
+// title: the title to be shown beside the text block
+// editable: if this text block is editable
+// onSave: async method to be executed on saving
 export default function CustomeHeader(props) {
 
     const [editing, setEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [currentPassward, setCurrentPassward] = useState("");
     const [newPassward, setNewPassward] = useState("");
     const [confirmPassward, setConfirmPassward] = useState("");
@@ -27,10 +34,12 @@ export default function CustomeHeader(props) {
 
     const onDone = async () => {
         if (newPassward === confirmPassward) {
+            setLoading(true);
             await props.onSave({
                 oldPassward: currentPassward,
                 newPassward: newPassward
             });
+            setLoading(false);
             setCurrentPassward("");
             setNewPassward("");
             setConfirmPassward("");
@@ -41,31 +50,48 @@ export default function CustomeHeader(props) {
         }
     }
 
+
+    // To convert the buttons to waiting icon on loading
+    const getButtons = () => {
+        if (loading) {
+            return (
+                <View style={styles.iconContainer}>
+                    <MaterialIcons style={styles.editIcon} name='more-horiz' size={28} />
+                </View>
+            );
+        }
+        else {
+            return (
+                <View style={styles.iconContainer}>
+                    <MaterialIcons style={styles.editIcon} name='clear' size={28} onPress={onCancel} />
+                    <MaterialIcons style={styles.editIcon} name='done' size={28} onPress={onDone} />
+                </View>
+            );
+        }
+    }
+
     if (props.editable)
         if (editing)
             return (
-                <View style={styles.container}>
-                    <View style={styles.inputsContainer}>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.text}>{"الحالية:"}</Text>
-                            <TextInput inputContainerStyle={styles.inputContainerStyle} value={currentPassward} onChangeText={(value) => setCurrentPassward(value)} secureTextEntry />
-                        </View>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.text}>{"الجديد:"}</Text>
-                            <TextInput inputContainerStyle={styles.inputContainerStyle} value={newPassward} onChangeText={(value) => setNewPassward(value)} secureTextEntry />
+                    <View style={styles.container}>
+                        <KeyboardAvoidingView style={styles.inputsContainer}>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.text}>{"الحالية:"}</Text>
+                                <TextInput inputContainerStyle={styles.inputContainerStyle} value={currentPassward} onChangeText={(value) => setCurrentPassward(value)} secureTextEntry />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.text}>{"الجديد:"}</Text>
+                                <TextInput inputContainerStyle={styles.inputContainerStyle} value={newPassward} onChangeText={(value) => setNewPassward(value)} secureTextEntry />
 
-                        </View>
-                        <View style={styles.textContainer}>
-                            <Text style={styles.text}>{"تأكيد الجديدة:"}</Text>
-                            <TextInput inputContainerStyle={styles.inputContainerStyle} value={confirmPassward} onChangeText={(value) => setConfirmPassward(value)} secureTextEntry />
+                            </View>
+                            <View style={styles.textContainer}>
+                                <Text style={styles.text}>{"تأكيد الجديدة:"}</Text>
+                                <TextInput inputContainerStyle={styles.inputContainerStyle} value={confirmPassward} onChangeText={(value) => setConfirmPassward(value)} secureTextEntry />
 
-                        </View>
+                            </View>
+                        </KeyboardAvoidingView>
+                        {getButtons()}
                     </View>
-                    <View style={styles.iconContainer}>
-                        <MaterialIcons style={styles.editIcon} name='clear' size={28} onPress={onCancel} />
-                        <MaterialIcons style={styles.editIcon} name='done' size={28} onPress={onDone} />
-                    </View>
-                </View>
 
             );
         else
@@ -84,6 +110,11 @@ export default function CustomeHeader(props) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: "row-reverse",
+        alignItems: "flex-end"
+    },
     textContainer: {
         flexDirection: "row-reverse"
     },
@@ -91,6 +122,7 @@ const styles = StyleSheet.create({
         ...globalStyles.text,
         alignSelf: "center",
         margin: 10,
+        marginVertical: 25,
         width: '20%'
     },
     editIcon: {
@@ -102,16 +134,14 @@ const styles = StyleSheet.create({
     inputContainerStyle: {
         width: '70%'
     },
-    container: {
-        flexDirection: "row-reverse",
-        alignItems: "center"
-    },
+
     inputsContainer: {
         flex: 1,
         flexDirection: "column"
     },
     iconContainer: {
         width: "20%",
-        flexDirection: "row-reverse"
+        alignSelf: "stretch",
+        flexDirection: "row-reverse",
     }
 })
