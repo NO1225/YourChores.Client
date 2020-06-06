@@ -10,4 +10,7 @@ module.exports = {
     changeName: API_URL + "api/auth/changename",
     changePassward: API_URL + "api/auth/changepassward",
 
+    getMyRooms: API_URL + "api/Rooms",
+    
+
 }

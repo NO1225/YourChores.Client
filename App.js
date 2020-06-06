@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, I18nManager } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
@@ -37,6 +37,7 @@ export default function App() {
 
   // All the setups before rendering
   const setup = async () => {
+    await I18nManager.forceRTL(false);
     await loadFonts();
     await checkToken();
   }

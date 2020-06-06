@@ -1,8 +1,8 @@
 // All the names of screens used in navigation
 const screens = {
-    Timeline:'الصفحة الرئيسية',
-    Rooms:'الغرف',
-    Settings:'الاعدادت',
+    Timeline: 'الصفحة الرئيسية',
+    Rooms: 'الغرف',
+    Settings: 'الاعدادت',
     RoomsScreen: 'RoomsScreen',
     RoomDetailsScreen: 'RoomDetailsScreen',
     AddChoreScreen: 'AddChoreScreen',
@@ -11,9 +11,15 @@ const screens = {
     TimelineScreen: 'TimelineScreen',
 
     // SwitchNavigation
-    DrawerNavigationScreen:'DrawerNavigationScreen',
-    LoginScreen:'loginScreen',
-    SignupSCreen:'signupScreen',
+    DrawerNavigationScreen: 'DrawerNavigationScreen',
+    LoginScreen: 'loginScreen',
+    SignupSCreen: 'signupScreen',
 }
 
-export {screens}
+const urgency = {
+    Low: 1,
+    Medium: 2,
+    High: 3
+}
+
+export { screens, urgency }
