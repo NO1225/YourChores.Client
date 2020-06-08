@@ -44,7 +44,7 @@ export default function roomComponent(props) {
 
     // What to do when pressed
     const hundlePress = async ()=>{
-        await props.onPress(props.room.roomId);
+        await props.onPress(props.room.roomId,props.room.roomName);
     }
 
     return (

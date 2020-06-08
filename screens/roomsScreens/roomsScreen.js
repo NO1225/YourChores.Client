@@ -54,8 +54,10 @@ export default function RoomsScreen(props) {
     setPopUpVisible(true);
   }
 
-  const goToRoomDetails = async (roomId) => {
-    console.log(roomId);
+  const goToRoomDetails = async (roomId, roomName) => {
+    console.log(roomId,roomName);
+
+    props.navigation.navigate(screens.RoomDetailsScreen,{roomId:roomId,name:roomName})
   }
 
   // Automatic reload when the screen is reentered
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
   modelButtonContainer: {
     alignSelf:"stretch",
     marginVertical: 20,
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     justifyContent: "space-around"
   },
   centeredView: {

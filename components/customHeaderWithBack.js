@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, ImageBackground, StatusBar, useColorScheme } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-import {colors} from '../global/styleConstants'
+import {colors, globalStyles, fontSizes} from '../global/styleConstants'
 
 export default function CustomHeaderWithBack({ title, navigation }) {
 
@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     text: {
+        ...globalStyles.text,
+        fontSize :fontSizes.xLarge,
         textAlign: "center"
     },
     horizantalLine: {

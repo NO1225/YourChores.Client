@@ -5,7 +5,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { colors, fonts, fontSizes, globalStyles } from '../global/styleConstants'
 
 export default function CustomCheckBoxComponent(props) {
-    const [checked, setChecked] = useState(props.value);
     const styles = StyleSheet.create({
         container: {
             flexDirection: "row-reverse",
@@ -32,9 +31,8 @@ export default function CustomCheckBoxComponent(props) {
     });
 
     const hundlePress = () => {
-        var check = checked;
+        var check = props.value;
         props.onPress(!check);
-        setChecked(!check);
     }
 
     const showCheck = (check) => {
@@ -47,7 +45,7 @@ export default function CustomCheckBoxComponent(props) {
         <View style={styles.container}>
             <Text style={styles.text}>{props.title}</Text>
             <TouchableOpacity style={styles.button} onPress={hundlePress}>
-                {showCheck(checked)}
+                {showCheck(props.value)}
             </TouchableOpacity>
         </View>
     )

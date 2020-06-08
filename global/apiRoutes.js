@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.43.73:5001/";
+const API_URL = "http://192.168.8.100:5001/";
 
 module.exports = {
 
@@ -12,6 +12,7 @@ module.exports = {
 
     getMyRooms: API_URL + "api/Rooms",
     createRoom: API_URL + "api/Rooms",
+    getRoomDetails: (id)=>`${API_URL}api/Rooms/getRoomById/${id}`
     
 
 }
