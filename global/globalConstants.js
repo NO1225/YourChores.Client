@@ -35,6 +35,26 @@ const urgency = {
     }
 }
 
+
+const choreState = {
+    All: 1,
+    Pending: 2,
+    Done: 3,
+    translate: (value) => {
+        switch (value) {
+            case 1:
+            case '1':
+                return "الجميع";
+            case 2:
+            case '2':
+                return "قيد الانتظار";
+            case 3:
+            case '3':
+                return "المنجز";
+        }
+    }
+}
+
 const papulateOptions = (enums) => {
     var options = [];
     for (var key in enums) {
@@ -50,4 +70,4 @@ const papulateOptions = (enums) => {
 }
 
 
-export { screens, urgency, papulateOptions }
+export { screens, urgency, choreState, papulateOptions }

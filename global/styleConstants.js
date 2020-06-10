@@ -46,7 +46,12 @@ const globalStyles = StyleSheet.create({
         fontFamily: fonts.almaraiRegular,
         fontSize: fontSizes.regular,
         color: colors.primaryFontColor,
-    }
+    },
+    filterSelection: {
+        justifyContent: "flex-end",
+        padding: 0,
+        borderWidth: 0,
+    },
 });
 
 // const images = {

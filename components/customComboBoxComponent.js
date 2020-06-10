@@ -8,6 +8,7 @@ import Button from './customButton';
 
 /// props.style => text style
 /// props.inputContainerStyle => container style
+/// props.buttonStyle => Style of the button
 export default function CustomComboBoxComponent(props) {
     const [popUpVisible, setPopUpVisible] = useState(false);
 
@@ -15,24 +16,11 @@ export default function CustomComboBoxComponent(props) {
     const styles = StyleSheet.create({
         inputContainer: {
 
-            minWidth: '70%',
+            minWidth: '90%',
             alignSelf: "center",
             ...props.inputContainerStyle
         },
-        input: {
-            width: '100%',
-            alignSelf: "stretch",
-            fontFamily: fonts.almaraiRegular,
-            fontSize: fontSizes.large,
-            color: colors.primaryFontColor,
-            textAlign: "center",
-            padding: 15,
-            paddingHorizontal: 30,
-            borderColor: colors.secondaryBackgroundColor,
-            borderStyle: "solid",
-            borderWidth: 1,
-            margin: 10,
-        },
+       
         text: {
             ...globalStyles.text,
             marginBottom: 0,
@@ -80,6 +68,7 @@ export default function CustomComboBoxComponent(props) {
             borderColor: colors.secondaryFontColor,
             borderStyle: "solid",
             borderWidth: 1,
+            ...props.buttonStyle
         },
         buttonTitle: {
             fontFamily: fonts.almaraiBold,
@@ -121,7 +110,7 @@ export default function CustomComboBoxComponent(props) {
 
             </Modal>
             <Text style={styles.text}>{props.title}</Text>
-            <View style={styles.textInputContainer}>
+            <View>
                 <TouchableOpacity style={styles.button} onPress={()=>setPopUpVisible(true)}>
                     <Text style={styles.buttonTitle}>{props.selected?props.options.filter(opt=>opt.value == props.selected)[0].text:props.title}</Text>
                     <MaterialIcons name="arrow-drop-down" size={24} color="black" />
