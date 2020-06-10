@@ -5,8 +5,11 @@ import { AppLoading } from 'expo';
 import { authGet, authPost } from '../../global/apiCalls';
 import ApiRoutes from '../../global/apiRoutes';
 import { colors, fontSizes, fonts, globalStyles } from '../../global/styleConstants';
+import { urgency, papulateOptions } from '../../global/globalConstants';
 
 import IconButton from '../../components/customIconButton'
+import TextInput from '../../components/customTextInput'
+import ComboBox from '../../components/customComboBoxComponent'
 import ChoreComponent from '../../components/choreComponent'
 
 export default function RoomDetailsScreen(props) {
@@ -18,7 +21,8 @@ export default function RoomDetailsScreen(props) {
   const [popUpVisible, setPopUpVisible] = useState(false);
 
   // Chores State
-  // const [roomName, setRoomName] = useState('');
+  const [discription, setDiscription] = useState('');
+  const [selectedUrgency, setSelectedUrgency] = useState(0);
   // const [allowMembersToPost, setAllowMmebersToPost] = useState(false);
 
   // Get call to get the user info from the api,
@@ -56,7 +60,17 @@ export default function RoomDetailsScreen(props) {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>اضافة واجب جديد</Text>
-
+              <ComboBox 
+              title="الاولوية" 
+              selected={selectedUrgency}
+              onSelect={(value)=>setSelectedUrgency(value)}
+              options={papulateOptions(urgency)}/>
+              <TextInput
+                value={discription}
+                onChangeText={(value) => setDiscription(value)}
+                multiline
+                title="التفاصيل:"
+                placeholder='تفاصيل الواجب' />
               <View style={styles.modelButtonContainer}>
                 <IconButton icon="check"  />
                 <IconButton icon="clear" onPress={() => setPopUpVisible(false)} />
