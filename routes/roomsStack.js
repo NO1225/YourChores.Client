@@ -5,7 +5,7 @@ import { screens } from '../global/globalConstants';
 
 import RoomsScreen from '../screens/roomsScreens/roomsScreen'
 import RoomDetailsScreen from '../screens/roomsScreens/roomDetailsScreen'
-import AddChoreScreen from '../screens/roomsScreens/addChoreScreen'
+import RoomSearchSreen from '../screens/roomsScreens/roomSearchSreen'
 import RoomSettingsScreen from '../screens/roomsScreens/roomSettingsScreen'
 
 import CustomHeader from '../components/customHeader'
@@ -66,10 +66,10 @@ function RoomsStack() {
         }
         } />
       <Stack.Screen
-        name={screens.AddChoreScreen}
-        component={AddChoreScreen}
+        name={screens.RoomSearchScreen}
+        component={RoomSearchSreen}
         options={{
-          title: 'اضافة واجب',
+          title: 'بحث عن غرفة',
           header: ({ scene, previous, navigation }) => {
             const { options } = scene.descriptor;
             const title =

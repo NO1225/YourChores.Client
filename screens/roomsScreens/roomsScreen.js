@@ -112,7 +112,7 @@ export default function RoomsScreen(props) {
           }
         />
         <View style={styles.buttonContainer}>
-          <IconButton icon="search" />
+          <IconButton icon="search" onPress={()=>props.navigation.navigate(screens.RoomSearchScreen)} />
           <IconButton icon="add" onPress={openPopUp} />
         </View>
       </View>

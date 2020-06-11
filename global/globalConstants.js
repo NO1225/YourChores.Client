@@ -5,7 +5,7 @@ const screens = {
     Settings: 'الاعدادت',
     RoomsScreen: 'RoomsScreen',
     RoomDetailsScreen: 'RoomDetailsScreen',
-    AddChoreScreen: 'AddChoreScreen',
+    RoomSearchScreen: 'RoomSearchScreen',
     RoomSettingsScreen: 'RoomSettingsScreen',
     SettingsScreen: 'SettingsScreen',
     TimelineScreen: 'TimelineScreen',
