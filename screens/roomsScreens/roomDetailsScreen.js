@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Modal, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Modal, FlatList, Alert } from 'react-native';
 import { AppLoading } from 'expo';
 
 import { authGet, authPost } from '../../global/apiCalls';
@@ -19,19 +19,37 @@ export default function RoomDetailsScreen(props) {
   const [isOwner, setIsOwner] = useState(false);
   const [filterState, setFilterState] = useState(choreState.All);
 
+  const [data, setData] = useState({});
   // To change the visibility of the popup
   const [popUpVisible, setPopUpVisible] = useState(false);
+  const [selectAlternativePopUpVisible, setSelectAlternativePopUpVisible] = useState(false);
 
   // Chores State
   const [discription, setDiscription] = useState('');
   const [selectedUrgency, setSelectedUrgency] = useState(0);
-  // const [allowMembersToPost, setAllowMmebersToPost] = useState(false);
+
+
+  const [alternativeId, setAlternativeId] = useState();
+
+  const alternativeOptions = () => {
+    var options = []
+    data.roomMembers.map(member => {
+      options.push({
+        value: member.userId,
+        text: `${member.firstName} ${member.lastName}`,
+        key: member.userId
+      })
+    })
+
+    return options;
+
+  }
 
   // Get call to get the user info from the api,
   const getRoomDetails = async (state) => {
     var data = await authGet(ApiRoutes.getRoomDetails(props.route.params.roomId));
     if (data.success) {
-
+      setData(data.response);
       if (state == choreState.Pending) {
         setChores(data.response.chores.filter(chore => !chore.done));
       }
@@ -62,6 +80,46 @@ export default function RoomDetailsScreen(props) {
     // setRoomName('');
     // setAllowMmebersToPost(false);
     setPopUpVisible(true);
+  }
+
+  const leave = async () => {
+    var data = await authPost(ApiRoutes.leaveRoom, {
+      "roomId": props.route.params.roomId,
+      "alternativeId": alternativeId
+    });
+
+    if (data.success) {
+      props.navigation.pop();
+    }
+  }
+
+  const hundleLeaveRequest = async () => {
+
+    if (data.isOwner && data.roomMembers.count == 1) {
+      Alert.alert(
+        "تأكيد حذف",
+        "سيتم حذف الغرفة في حال موافقة",
+        [
+          {
+            text: 'الغاء',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'تأكيد', onPress: () => leave()
+          },
+        ]
+      )
+    }
+    else if (data.isOwner && (await data.roomMembers.filter(member => member.isOwner)).length == 1) {
+      setAlternativeId(null);
+      setSelectAlternativePopUpVisible(true);
+    }
+    else {
+      leave()
+    }
+
+
   }
 
   if (loaded)
@@ -96,6 +154,30 @@ export default function RoomDetailsScreen(props) {
             </View>
           </View>
         </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={selectAlternativePopUpVisible}
+          onRequestClose={() => {
+            console.log("Modal has been closed.");
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>اختيار المالك البديل</Text>
+              <ComboBox
+                title="الاعضاء"
+                selected={alternativeId}
+                onSelect={(value) => setAlternativeId(value)}
+                options={alternativeOptions()} />
+
+              <View style={styles.modelButtonContainer}>
+                <IconButton icon="check" onPress={leave}/>
+                <IconButton icon="clear" onPress={() => setSelectAlternativePopUpVisible(false)} />
+              </View>
+            </View>
+          </View>
+        </Modal>
         <ComboBox
           buttonStyle={globalStyles.filterSelection}
           selected={filterState}
@@ -112,8 +194,8 @@ export default function RoomDetailsScreen(props) {
           }
         />
         <View style={styles.buttonContainer}>
-          <IconButton icon="exit-to-app" />
-          {isOwner ? <IconButton icon="settings" onPress={()=>props.navigation.navigate(screens.RoomSettingsScreen)} /> : null}
+          <IconButton icon="exit-to-app" onPress={hundleLeaveRequest} />
+          {isOwner ? <IconButton icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen)} /> : null}
           {postAllowed ? <IconButton icon="playlist-add" onPress={openPopUp} /> : null}
         </View>
       </View>
@@ -166,5 +248,5 @@ const styles = StyleSheet.create({
     ...globalStyles.text,
     marginBottom: 20
   },
-  
+
 });

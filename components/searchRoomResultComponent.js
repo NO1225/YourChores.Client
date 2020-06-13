@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { colors, fonts, fontSizes, globalStyles } from '../global/styleConstants';
 import { urgency } from '../global/globalConstants';
 
+import IconButton from './customIconButton';
+
 // room: the room to show in this card
 // onPress: what to do when this card is pressed
 export default function SearchRoomResultComponent(props) {

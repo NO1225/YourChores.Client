@@ -44,7 +44,7 @@ export default function RoomSearchScreen(props) {
         keyExtractor={item => `${item.roomId}`}
         renderItem={({ item }) => {
           return (
-            <SearchRoomResult searchResult={item} />
+            <SearchRoomResult searchResult={item} hundleJoinRequest={hundleJoinRequest}/>
           );
         }
         }

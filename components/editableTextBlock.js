@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     inputContainerStyle: {
-        width: '50%'
+        minWidth: '50%'
     },
     iconsContainer: {
         flexDirection: "row-reverse",

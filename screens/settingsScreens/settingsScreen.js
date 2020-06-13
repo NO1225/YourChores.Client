@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { AppLoading } from 'expo';
 
@@ -64,6 +64,20 @@ export default function SettingsScreen(props) {
       alert(errors);
     }
   }
+
+ // Automatic reload when the screen is reentered
+ useEffect(() => {
+  const unsubscribe = props.navigation.addListener('focus', () => {
+    // The screen is focused
+    // Call any action
+    getMyInfo();
+
+  });
+
+  // Return the function to unsubscribe from the event so it gets removed on unmount
+  return unsubscribe;
+}, [props.navigation]);
+
 
   if (loaded)
     return (
