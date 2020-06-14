@@ -12,8 +12,10 @@ module.exports = {
 
     getMyRooms: API_URL + "api/Rooms",
     createRoom: API_URL + "api/Rooms",
+    updateRoom: API_URL + "api/Rooms/Update",
     joinRoom: API_URL + "api/Rooms/Join",
     leaveRoom: API_URL + "api/Rooms/Leave",
+    kickMember: API_URL + "api/Rooms/Kick",
     getRoomDetails: (id)=>`${API_URL}api/Rooms/getRoomById/${id}`,
     searchRoomName: (name)=>`${API_URL}api/Rooms/getRoomsByName/${name}`
     

@@ -195,7 +195,7 @@ export default function RoomDetailsScreen(props) {
         />
         <View style={styles.buttonContainer}>
           <IconButton icon="exit-to-app" onPress={hundleLeaveRequest} />
-          {isOwner ? <IconButton icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen)} /> : null}
+          {isOwner ? <IconButton icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen,{roomId:props.route.params.roomId})} /> : null}
           {postAllowed ? <IconButton icon="playlist-add" onPress={openPopUp} /> : null}
         </View>
       </View>

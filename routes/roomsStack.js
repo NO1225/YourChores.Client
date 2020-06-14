@@ -5,7 +5,7 @@ import { screens } from '../global/globalConstants';
 
 import RoomsScreen from '../screens/roomsScreens/roomsScreen'
 import RoomDetailsScreen from '../screens/roomsScreens/roomDetailsScreen'
-import RoomSearchSreen from '../screens/roomsScreens/roomSearchSreen'
+import RoomSearchSreen from '../screens/roomsScreens/roomSearchScreen'
 import RoomSettingsScreen from '../screens/roomsScreens/roomSettingsScreen'
 
 import CustomHeader from '../components/customHeader'
