@@ -109,7 +109,7 @@ export default function RoomDetailsScreen(props) {
   }
 
   const findMember = async () => {
-
+    props.navigation.navigate(screens.MemberSearchScreen,{roomId:props.route.params.roomId});
   }
 
   if (loaded)

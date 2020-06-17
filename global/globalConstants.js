@@ -7,6 +7,7 @@ const screens = {
     RoomDetailsScreen: 'RoomDetailsScreen',
     RoomSearchScreen: 'RoomSearchScreen',
     RoomSettingsScreen: 'RoomSettingsScreen',
+    MemberSearchScreen: 'MemberSearchScreen',
     SettingsScreen: 'SettingsScreen',
     TimelineScreen: 'TimelineScreen',
 

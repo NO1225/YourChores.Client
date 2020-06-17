@@ -7,6 +7,7 @@ import RoomsScreen from '../screens/roomsScreens/roomsScreen'
 import RoomDetailsScreen from '../screens/roomsScreens/roomDetailsScreen'
 import RoomSearchSreen from '../screens/roomsScreens/roomSearchScreen'
 import RoomSettingsScreen from '../screens/roomsScreens/roomSettingsScreen'
+import MemberSearchScreen from '../screens/roomsScreens/memberSearchScreen'
 
 import CustomHeader from '../components/customHeader'
 import CustomHeaderWithBack from '../components/customHeaderWithBack'
@@ -95,6 +96,31 @@ function RoomsStack() {
         component={RoomSettingsScreen}
         options={{
           title: 'اعدادات الغرفة',
+          header: ({ scene, previous, navigation }) => {
+            const { options } = scene.descriptor;
+            const title =
+            scene.route.params===undefined
+            ||scene.route.params.name===undefined
+            ?options.headerTitle !== undefined
+                ? options.headerTitle
+                : options.title !== undefined
+                  ? options.title
+                  : scene.route.name:scene.route.params.name;
+
+            return (
+              <CustomHeaderWithBack
+                title={title}
+                navigation={navigation}
+              />
+            );
+          }
+        }
+        } />
+      <Stack.Screen
+        name={screens.MemberSearchScreen}
+        component={MemberSearchScreen}
+        options={{
+          title: 'البحث عن اعضاء',
           header: ({ scene, previous, navigation }) => {
             const { options } = scene.descriptor;
             const title =

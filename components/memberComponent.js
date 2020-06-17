@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons'; 
 
 import { colors, fonts, fontSizes, globalStyles } from '../global/styleConstants';
 import { urgency } from '../global/globalConstants';
@@ -33,18 +34,27 @@ export default function MemberComponent(props) {
             borderStyle: "solid",
             borderWidth: 1
         },
-        buttonContainer:{
+        buttonContainer: {
             flexDirection: "row-reverse",
             alignItems: "center",
 
+        },
+        textContainer: {
+            alignItems: "flex-end",
+            justifyContent: "center"
         }
     });
 
     return (
         <View style={styles.cardContainer}>
-            <Text style={styles.text}>{`${props.member.firstName} ${props.member.lastName}`}</Text>
+            <View style={styles.textContainer}>
+                <Text style={styles.text}>{`${props.member.firstName} ${props.member.lastName}`}</Text>
+                {props.member.userName? <Text style={styles.text}>{props.member.userName}</Text>:null}
+            </View>
             <View style={styles.buttonContainer} >
-                {props.buttons.map(button=><IconButton key={button.icon} style={styles.icon} icon={button.icon} onPress={() => button.method(props.member.userId)} />)}
+                {props.buttons.map(button => <IconButton key={button.icon} style={styles.icon} icon={button.icon} onPress={() => button.method(props.member.userId)} />)}
+                {props.icons?props.icons.map(icon => <MaterialIcons style={styles.iconStyle} name={icon} size={fontSizes.xLarge} color={colors.accent1} />):null}
+
             </View>
         </View>
     )
