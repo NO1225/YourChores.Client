@@ -30,6 +30,7 @@ export default function App() {
 
     if (data.success) {
       await AsyncStorage.setItem("TOKEN", data.response.token);
+      await AsyncStorage.setItem("USERID",data.response.userId);
 
       setCurrentScreen(screens.DrawerNavigationScreen);
     }

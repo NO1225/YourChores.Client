@@ -31,6 +31,7 @@ export default function LoginScreen(props) {
       console.log("Logged in");
 
       await AsyncStorage.setItem("TOKEN",data.response.token);
+      await AsyncStorage.setItem("USERID",data.response.userId);
 
       props.setCurrentScreen(screens.DrawerNavigationScreen);
     }

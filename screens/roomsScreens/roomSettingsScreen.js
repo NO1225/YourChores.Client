@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Modal, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Modal, FlatList, AsyncStorage } from 'react-native';
 import { AppLoading } from 'expo';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -9,12 +9,13 @@ import { colors, fontSizes, fonts, globalStyles } from '../../global/styleConsta
 import { urgency, choreState, papulateOptions, screens } from '../../global/globalConstants';
 
 import IconButton from '../../components/customIconButton'
-import TextInput from '../../components/customTextInput'
+import MemberComponent from '../../components/memberComponent'
 import CheckBox from '../../components/customCheckBoxComponent'
 import CollabsablePanel from '../../components/customCollabsablePanelComponent'
 
 export default function RoomDetailsScreen(props) {
   const [loaded, setLoaded] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState("");
 
   const [allowMembersToPost, setAllowMmebersToPost] = useState(false);
   const [newAllowMembersToPost, setNewAllowMmebersToPost] = useState(false);
@@ -29,11 +30,13 @@ export default function RoomDetailsScreen(props) {
     var data = await authGet(ApiRoutes.getRoomDetails(props.route.params.roomId));
 
     if (data.success) {
+      setCurrentUserId(await AsyncStorage.getItem("USERID"));
+
       setAllowMmebersToPost(data.response.allowMembersToPost);
       setNewAllowMmebersToPost(data.response.allowMembersToPost);
 
-      setMembers(data.response.roomMembers.filter(roomMember => !roomMember.isOwner));
-      setOwners(data.response.roomMembers.filter(roomMember => roomMember.isOwner));
+      setMembers(await data.response.roomMembers.filter(roomMember => !roomMember.isOwner));
+      setOwners(await data.response.roomMembers.filter(roomMember => roomMember.isOwner));
     }
   }
 
@@ -57,58 +60,110 @@ export default function RoomDetailsScreen(props) {
     if (data.success) {
       getRoomDetails();
     }
-    else
-    {
-      console.log(data.errors)
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
     }
+  }
+
+  const promoteMember = async (userId) => {
+    var data = await authPost(ApiRoutes.promoteMember, {
+      "roomId": props.route.params.roomId,
+      "userId": userId
+    });
+
+    if (data.success) {
+      getRoomDetails();
+    }
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
+    }
+  }
+
+  const demoteOwner = async (userId) => {
+    var data = await authPost(ApiRoutes.demoteOwner, {
+      "roomId": props.route.params.roomId,
+      "userId": userId
+    });
+
+    if (data.success) {
+      if (currentUserId == userId) {
+        props.navigation.pop();
+        props.route.params.refresh();
+
+      }
+      else {
+        getRoomDetails();
+
+      }
+
+    }
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
+    }
+  }
+
+  const findMember = async () => {
+
   }
 
   if (loaded)
     return (
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <CheckBox title="السماح للاعضاء باضافة الواجبات" value={newAllowMembersToPost} onPress={(value) => setNewAllowMmebersToPost(value)} />
-          {allowMembersToPost != newAllowMembersToPost ? <IconButton style={styles.icon} icon="save" onPress={updateRoom} /> : null}
+        <View style={styles.container}>
+
+          <View style={styles.headerContainer}>
+            <CheckBox title="السماح للاعضاء باضافة الواجبات" value={newAllowMembersToPost} onPress={(value) => setNewAllowMmebersToPost(value)} />
+            {allowMembersToPost != newAllowMembersToPost ? <IconButton style={styles.icon} icon="save" onPress={updateRoom} /> : null}
+          </View>
+
+          <CollabsablePanel title="المالكين">
+            <FlatList
+              data={owners}
+              keyExtractor={item => item.userId}
+              renderItem={({ item }) => {
+                var buttons = [];
+                buttons.push({ icon: "arrow-downward", method: demoteOwner });
+                if (currentUserId != item.userId) {
+                  buttons.push({ icon: "remove-circle-outline", method: kickMember });
+                }
+
+                return (
+                  <MemberComponent member={item} buttons={buttons} />
+                );
+              }
+              }
+            />
+          </CollabsablePanel>
+
+          <CollabsablePanel title="الاعضاء">
+            <FlatList
+              data={members}
+              keyExtractor={item => item.userId}
+              renderItem={({ item }) => {
+                var buttons = [];
+                buttons.push({ icon: "arrow-upward", method: promoteMember });
+                buttons.push({ icon: "remove-circle-outline", method: kickMember });
+
+                return (
+                  <MemberComponent member={item} buttons={buttons} />
+                );
+              }
+              }
+            />
+          </CollabsablePanel>
+
         </View>
 
-        <CollabsablePanel title="المالكين">
-          <FlatList
-            data={owners}
-            keyExtractor={item => item.userId}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.cardContainer}>
-                  <Text style={styles.text}>{`${item.firstName} ${item.lastName}`}</Text>
-                  <View>
-                    <IconButton style={styles.icon} icon="remove-circle-outline" onPress={() => kickMember(item.userId)} />
-                  </View>
-                </View>
-              );
-            }
-            }
-          />
-        </CollabsablePanel>
+        <View style={styles.buttonContainer}>
+          <IconButton icon="group-add" onPress={findMember} />
 
-        <CollabsablePanel title="الاعضاء">
-          <FlatList
-            data={members}
-            keyExtractor={item => item.userId}
-            renderItem={({ item }) => {
-              return (
-                <View style={styles.cardContainer}>
-                  <Text style={styles.text}>{`${item.firstName} ${item.lastName}`}</Text>
-                  <View>
-                    <IconButton style={styles.icon} icon="remove-circle-outline" onPress={() => kickMember(item.userId)} />
-                  </View>
-                </View>
-              );
-            }
-            }
-          />
-        </CollabsablePanel>
-
-
-
+        </View>
       </View>
     )
   else
@@ -142,14 +197,10 @@ const styles = StyleSheet.create({
     ...globalStyles.text,
     padding: 10
   },
-  cardContainer:{
+  buttonContainer: {
+    marginTop: -70,
+    marginBottom: 10,
     flexDirection: "row-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
-    margin: 10,
-    padding: 10,
-    borderColor: colors.accent1,
-    borderStyle: "solid",
-    borderWidth: 1
-  }
+    justifyContent: "space-around"
+  },
 });

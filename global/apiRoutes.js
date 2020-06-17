@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.8.103:5001/";
+const API_URL = "http://192.168.8.100:5001/";
 
 module.exports = {
 
@@ -16,6 +16,8 @@ module.exports = {
     joinRoom: API_URL + "api/Rooms/Join",
     leaveRoom: API_URL + "api/Rooms/Leave",
     kickMember: API_URL + "api/Rooms/Kick",
+    promoteMember: API_URL + "api/Rooms/Promote",
+    demoteOwner: API_URL + "api/Rooms/Demote",
     getRoomDetails: (id)=>`${API_URL}api/Rooms/getRoomById/${id}`,
     searchRoomName: (name)=>`${API_URL}api/Rooms/getRoomsByName/${name}`
     

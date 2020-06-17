@@ -48,16 +48,17 @@ export default function RoomDetailsScreen(props) {
   // Get call to get the user info from the api,
   const getRoomDetails = async (state) => {
     var data = await authGet(ApiRoutes.getRoomDetails(props.route.params.roomId));
+    console.log(data);
     if (data.success) {
       setData(data.response);
       if (state == choreState.Pending) {
-        setChores(data.response.chores.filter(chore => !chore.done));
+        setChores(await data.response.chores.filter(chore => !chore.done));
       }
       else if (state == choreState.Done) {
-        setChores(data.response.chores.filter(chore => chore.done));
+        setChores(await data.response.chores.filter(chore => chore.done));
       }
       else {
-        setChores(data.response.chores);
+        setChores(await data.response.chores);
       }
 
       if (data.response.allowMembersToPost || data.response.isOwner) {
@@ -118,9 +119,8 @@ export default function RoomDetailsScreen(props) {
     else {
       leave()
     }
-
-
   }
+
 
   if (loaded)
     return (
@@ -195,7 +195,7 @@ export default function RoomDetailsScreen(props) {
         />
         <View style={styles.buttonContainer}>
           <IconButton icon="exit-to-app" onPress={hundleLeaveRequest} />
-          {isOwner ? <IconButton icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen,{roomId:props.route.params.roomId})} /> : null}
+          {isOwner ? <IconButton icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen,{roomId:props.route.params.roomId,refresh:props.navigation.pop})} /> : null}
           {postAllowed ? <IconButton icon="playlist-add" onPress={openPopUp} /> : null}
         </View>
       </View>

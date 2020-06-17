@@ -6,7 +6,7 @@ import {urgency} from '../global/globalConstants';
 
 // room: the room to show in this card
 // onPress: what to do when this card is pressed
-export default function roomComponent(props) {
+export default function RoomComponent(props) {
 
     // Decide the urgency color
     var urgencyColor;
