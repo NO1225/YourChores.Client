@@ -44,7 +44,6 @@ export default function MemberComponent(props) {
             justifyContent: "center"
         }
     });
-
     return (
         <View style={styles.cardContainer}>
             <View style={styles.textContainer}>
@@ -52,7 +51,7 @@ export default function MemberComponent(props) {
                 {props.member.userName? <Text style={styles.text}>{props.member.userName}</Text>:null}
             </View>
             <View style={styles.buttonContainer} >
-                {props.buttons.map(button => <IconButton key={button.icon} style={styles.icon} icon={button.icon} onPress={() => button.method(props.member.userId)} />)}
+                {props.buttons.map(button => <IconButton key={button.icon} style={styles.icon} icon={button.icon} onPress={() => button.method(props.paramSelector?props.paramSelector(props.member):props.member.userId)} />)}
                 {props.icons?props.icons.map(icon => <MaterialIcons style={styles.iconStyle} name={icon} size={fontSizes.xLarge} color={colors.accent1} />):null}
 
             </View>

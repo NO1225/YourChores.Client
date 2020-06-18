@@ -5,7 +5,7 @@ import { AppLoading } from 'expo';
 import { authGet, authPost } from '../../global/apiCalls';
 import ApiRoutes from '../../global/apiRoutes';
 import { colors, fontSizes, fonts, globalStyles } from '../../global/styleConstants';
-import { urgency, choreState, papulateOptions, screens } from '../../global/globalConstants';
+import { urgency, choreState, papulateOptions, screens, joinRequestType } from '../../global/globalConstants';
 
 import IconButton from '../../components/customIconButton'
 import TextInput from '../../components/customTextInput'
@@ -18,6 +18,7 @@ export default function RoomDetailsScreen(props) {
   const [postAllowed, setPostAllowed] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [filterState, setFilterState] = useState(choreState.All);
+  const [pendingJoinRequest, setPendingJoinRequest] = useState(0);
 
   const [data, setData] = useState({});
   // To change the visibility of the popup
@@ -48,7 +49,6 @@ export default function RoomDetailsScreen(props) {
   // Get call to get the user info from the api,
   const getRoomDetails = async (state) => {
     var data = await authGet(ApiRoutes.getRoomDetails(props.route.params.roomId));
-    console.log(data);
     if (data.success) {
       setData(data.response);
       if (state == choreState.Pending) {
@@ -67,6 +67,15 @@ export default function RoomDetailsScreen(props) {
 
       if (data.response.isOwner) {
         setIsOwner(true);
+      }
+
+      if(data.response.joinRequests)
+      {
+        setPendingJoinRequest(
+          (await data.response.joinRequests.
+            filter(joinRequest=>joinRequest.joinRequestType == joinRequestType.Join))
+            .length)
+
       }
     }
   }
@@ -195,7 +204,7 @@ export default function RoomDetailsScreen(props) {
         />
         <View style={styles.buttonContainer}>
           <IconButton icon="exit-to-app" onPress={hundleLeaveRequest} />
-          {isOwner ? <IconButton icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen,{roomId:props.route.params.roomId,refresh:props.navigation.pop})} /> : null}
+          {isOwner ? <IconButton notifications={pendingJoinRequest} icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen,{roomId:props.route.params.roomId,refresh:props.navigation.pop})} /> : null}
           {postAllowed ? <IconButton icon="playlist-add" onPress={openPopUp} /> : null}
         </View>
       </View>

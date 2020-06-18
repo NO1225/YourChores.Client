@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { authGet, authPost } from '../../global/apiCalls';
 import ApiRoutes from '../../global/apiRoutes';
 import { colors, fontSizes, fonts, globalStyles } from '../../global/styleConstants';
-import { urgency, choreState, papulateOptions, screens } from '../../global/globalConstants';
+import { urgency, choreState, papulateOptions, screens, joinRequestType } from '../../global/globalConstants';
 
 import IconButton from '../../components/customIconButton'
 import MemberComponent from '../../components/memberComponent'
@@ -22,6 +22,7 @@ export default function RoomDetailsScreen(props) {
 
   const [owners, setOwners] = useState([]);
   const [members, setMembers] = useState([]);
+  const [joinRequests, setJoinRequests] = useState([]);
 
 
 
@@ -37,6 +38,7 @@ export default function RoomDetailsScreen(props) {
 
       setMembers(await data.response.roomMembers.filter(roomMember => !roomMember.isOwner));
       setOwners(await data.response.roomMembers.filter(roomMember => roomMember.isOwner));
+      setJoinRequests(await data.response.joinRequests.filter(joinRequest => joinRequest.joinRequestType == joinRequestType.Join))
     }
   }
 
@@ -108,8 +110,26 @@ export default function RoomDetailsScreen(props) {
     }
   }
 
+
+  const acceptRequest = async (requestId) => {
+
+    var data = await authPost(ApiRoutes.acceptRequest, {
+      "roomId": props.route.params.roomId,
+      "joinRequestId": requestId
+    });
+
+    if (data.success) {
+      getRoomDetails();
+    }
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
+    }
+  }
+
   const findMember = async () => {
-    props.navigation.navigate(screens.MemberSearchScreen,{roomId:props.route.params.roomId});
+    props.navigation.navigate(screens.MemberSearchScreen, { roomId: props.route.params.roomId });
   }
 
   if (loaded)
@@ -152,6 +172,22 @@ export default function RoomDetailsScreen(props) {
 
                 return (
                   <MemberComponent member={item} buttons={buttons} />
+                );
+              }
+              }
+            />
+          </CollabsablePanel>
+
+          <CollabsablePanel title="طلبات الانضمام">
+            <FlatList
+              data={joinRequests}
+              keyExtractor={item => item.userId}
+              renderItem={({ item }) => {
+                var buttons = [];
+                buttons.push({ icon: "check", method: acceptRequest });
+
+                return (
+                  <MemberComponent member={item} buttons={buttons} paramSelector={(member)=>member.joinRequestId} />
                 );
               }
               }

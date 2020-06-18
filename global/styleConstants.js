@@ -28,6 +28,7 @@ const colors = {
 
     accent1: '#8B7FF9',
     accent2: '#8B7FF9',
+    accent3: '#FF0000',
 
     highUrgency: '#FF0000',
     mediumUrgency: '#FF8000',
