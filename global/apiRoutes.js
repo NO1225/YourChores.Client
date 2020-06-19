@@ -16,6 +16,7 @@ module.exports = {
     joinRoom: API_URL + "api/Rooms/Join",
     inviteMember: API_URL + "api/Rooms/Invite",
     acceptRequest: API_URL + "api/Rooms/Accept",
+    cancelInvitation: API_URL + "api/Rooms/CancelInvitaion",
     leaveRoom: API_URL + "api/Rooms/Leave",
     kickMember: API_URL + "api/Rooms/Kick",
     promoteMember: API_URL + "api/Rooms/Promote",

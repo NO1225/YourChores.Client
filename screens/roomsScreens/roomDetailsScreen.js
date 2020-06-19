@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Modal, FlatList, Alert } from 'react-native';
 import { AppLoading } from 'expo';
 
@@ -60,22 +60,19 @@ export default function RoomDetailsScreen(props) {
       else {
         setChores(await data.response.chores);
       }
+      setPostAllowed(data.response.allowMembersToPost || data.response.isOwner);
+      setIsOwner(data.response.isOwner);
 
-      if (data.response.allowMembersToPost || data.response.isOwner) {
-        setPostAllowed(true);
-      }
-
-      if (data.response.isOwner) {
-        setIsOwner(true);
-      }
-
-      if(data.response.joinRequests)
-      {
+      if (data.response.joinRequests) {
         setPendingJoinRequest(
           (await data.response.joinRequests.
-            filter(joinRequest=>joinRequest.joinRequestType == joinRequestType.Join))
-            .length)
+            filter(joinRequest => joinRequest.joinRequestType == joinRequestType.Join))
+            .length);
 
+      }
+      else
+      {
+        setPendingJoinRequest(0);
       }
     }
   }
@@ -130,6 +127,18 @@ export default function RoomDetailsScreen(props) {
     }
   }
 
+  // Automatic reload when the screen is reentered
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      getRoomDetails();
+
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [props.navigation]);
 
   if (loaded)
     return (
@@ -181,7 +190,7 @@ export default function RoomDetailsScreen(props) {
                 options={alternativeOptions()} />
 
               <View style={styles.modelButtonContainer}>
-                <IconButton icon="check" onPress={leave}/>
+                <IconButton icon="check" onPress={leave} />
                 <IconButton icon="clear" onPress={() => setSelectAlternativePopUpVisible(false)} />
               </View>
             </View>
@@ -204,7 +213,7 @@ export default function RoomDetailsScreen(props) {
         />
         <View style={styles.buttonContainer}>
           <IconButton icon="exit-to-app" onPress={hundleLeaveRequest} />
-          {isOwner ? <IconButton notifications={pendingJoinRequest} icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen,{roomId:props.route.params.roomId,refresh:props.navigation.pop})} /> : null}
+          {isOwner ? <IconButton notifications={pendingJoinRequest} icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen, { roomId: props.route.params.roomId})} /> : null}
           {postAllowed ? <IconButton icon="playlist-add" onPress={openPopUp} /> : null}
         </View>
       </View>

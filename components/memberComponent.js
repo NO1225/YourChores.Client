@@ -52,7 +52,7 @@ export default function MemberComponent(props) {
             </View>
             <View style={styles.buttonContainer} >
                 {props.buttons.map(button => <IconButton key={button.icon} style={styles.icon} icon={button.icon} onPress={() => button.method(props.paramSelector?props.paramSelector(props.member):props.member.userId)} />)}
-                {props.icons?props.icons.map(icon => <MaterialIcons style={styles.iconStyle} name={icon} size={fontSizes.xLarge} color={colors.accent1} />):null}
+                {props.icons?props.icons.map(icon => <MaterialIcons key={icon} style={styles.iconStyle} name={icon} size={fontSizes.xLarge} color={colors.accent1} />):null}
 
             </View>
         </View>

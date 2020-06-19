@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Modal, FlatList, AsyncStorage } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Modal, FlatList, AsyncStorage, Alert } from 'react-native';
 import { AppLoading } from 'expo';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { authGet, authPost } from '../../global/apiCalls';
-import ApiRoutes from '../../global/apiRoutes';
+import ApiRoutes, { cancelInvitaion } from '../../global/apiRoutes';
 import { colors, fontSizes, fonts, globalStyles } from '../../global/styleConstants';
 import { urgency, choreState, papulateOptions, screens, joinRequestType } from '../../global/globalConstants';
 
@@ -23,6 +23,7 @@ export default function RoomDetailsScreen(props) {
   const [owners, setOwners] = useState([]);
   const [members, setMembers] = useState([]);
   const [joinRequests, setJoinRequests] = useState([]);
+  const [invitations, setInvitations] = useState([]);
 
 
 
@@ -39,6 +40,7 @@ export default function RoomDetailsScreen(props) {
       setMembers(await data.response.roomMembers.filter(roomMember => !roomMember.isOwner));
       setOwners(await data.response.roomMembers.filter(roomMember => roomMember.isOwner));
       setJoinRequests(await data.response.joinRequests.filter(joinRequest => joinRequest.joinRequestType == joinRequestType.Join))
+      setInvitations(await data.response.joinRequests.filter(joinRequest => joinRequest.joinRequestType == joinRequestType.Invite))
     }
   }
 
@@ -54,19 +56,36 @@ export default function RoomDetailsScreen(props) {
   }
 
   const kickMember = async (userId) => {
-    var data = await authPost(ApiRoutes.kickMember, {
-      "roomId": props.route.params.roomId,
-      "userId": userId
-    });
+    Alert.alert(
+      "تأكيد الطرد",
+      "سيتم طرد العضو في حال موافقة",
+      [
+        {
+          text: 'الغاء',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'تأكيد', onPress: async () => {
+            var data = await authPost(ApiRoutes.kickMember, {
+              "roomId": props.route.params.roomId,
+              "userId": userId
+            });
 
-    if (data.success) {
-      getRoomDetails();
-    }
-    else {
-      var errors = '';
-      data.errors.map(error => { errors = errors + error + '\n' });
-      alert(errors);
-    }
+            if (data.success) {
+              getRoomDetails();
+            }
+            else {
+              var errors = '';
+              data.errors.map(error => { errors = errors + error + '\n' });
+              alert(errors);
+            }
+          }
+        },
+      ]
+    )
+
+
   }
 
   const promoteMember = async (userId) => {
@@ -94,7 +113,6 @@ export default function RoomDetailsScreen(props) {
     if (data.success) {
       if (currentUserId == userId) {
         props.navigation.pop();
-        props.route.params.refresh();
 
       }
       else {
@@ -128,9 +146,40 @@ export default function RoomDetailsScreen(props) {
     }
   }
 
+
+  const cancelInvitation = async (requestId) => {
+
+    var data = await authPost(ApiRoutes.cancelInvitation, {
+      "roomId": props.route.params.roomId,
+      "joinRequestId": requestId
+    });
+
+    if (data.success) {
+      getRoomDetails();
+    }
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
+    }
+  }
+
   const findMember = async () => {
     props.navigation.navigate(screens.MemberSearchScreen, { roomId: props.route.params.roomId });
   }
+
+  // Automatic reload when the screen is reentered
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      getRoomDetails();
+
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [props.navigation]);
 
   if (loaded)
     return (
@@ -141,6 +190,24 @@ export default function RoomDetailsScreen(props) {
             <CheckBox title="السماح للاعضاء باضافة الواجبات" value={newAllowMembersToPost} onPress={(value) => setNewAllowMmebersToPost(value)} />
             {allowMembersToPost != newAllowMembersToPost ? <IconButton style={styles.icon} icon="save" onPress={updateRoom} /> : null}
           </View>
+
+
+          <CollabsablePanel title="طلبات الانضمام">
+            <FlatList
+              data={joinRequests}
+              keyExtractor={item => item.userId}
+              renderItem={({ item }) => {
+                var buttons = [];
+                buttons.push({ icon: "check", method: acceptRequest });
+
+                return (
+                  <MemberComponent member={item} buttons={buttons} paramSelector={(member) => member.joinRequestId} />
+                );
+              }
+              }
+            />
+          </CollabsablePanel>
+
 
           <CollabsablePanel title="المالكين">
             <FlatList
@@ -178,16 +245,16 @@ export default function RoomDetailsScreen(props) {
             />
           </CollabsablePanel>
 
-          <CollabsablePanel title="طلبات الانضمام">
+          <CollabsablePanel title="الدعوات المرسلة">
             <FlatList
-              data={joinRequests}
+              data={invitations}
               keyExtractor={item => item.userId}
               renderItem={({ item }) => {
                 var buttons = [];
-                buttons.push({ icon: "check", method: acceptRequest });
+                buttons.push({ icon: "clear", method: cancelInvitation });
 
                 return (
-                  <MemberComponent member={item} buttons={buttons} paramSelector={(member)=>member.joinRequestId} />
+                  <MemberComponent member={item} buttons={buttons} paramSelector={(member) => member.joinRequestId} />
                 );
               }
               }
