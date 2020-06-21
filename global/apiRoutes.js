@@ -25,5 +25,9 @@ module.exports = {
     searchRoomName: (name) => `${API_URL}api/Rooms/getRoomsByName/${name}`,
     findMember: API_URL + "api/Rooms/FindMember",
 
+    createChore : API_URL + "api/Chores",
+    getMyChores : API_URL + "api/Chores",
+    updateChore : API_URL + "api/Chores/Update",
+
 
 }

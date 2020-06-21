@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 
 import { colors, fonts, fontSizes, globalStyles } from '../global/styleConstants';
 import { urgency } from '../global/globalConstants';
+import ApiRoutes from '../global/apiRoutes';
+import { authPost } from '../global/apiCalls';
 
 import CheckBox from './customCheckBoxComponent'
 
@@ -35,7 +37,7 @@ export default function choreComponent(props) {
         },
         textContainer: {
             margin: 5,
-            marginLeft:0,
+            marginLeft: 0,
             flex: 1,
         },
         checkBoxContainer: {
@@ -45,7 +47,7 @@ export default function choreComponent(props) {
         },
         text: {
             ...globalStyles.text,
-            fontSize:fontSizes.large,
+            fontSize: fontSizes.large,
             textAlign: "center",
             lineHeight: fontSizes.xxLarge,
             margin: 5
@@ -57,15 +59,46 @@ export default function choreComponent(props) {
         await props.onPress(props.chore);
     }
 
+
+    const updateChore = async () => {
+        Alert.alert(
+            "تأكيد الانهاء",
+            "هل انت متأكد من اتمام الواجب ؟؟؟",
+            [
+                {
+                    text: 'الغاء',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'تأكيد', onPress: async () => {
+
+                        var data = await authPost(ApiRoutes.updateChore, {
+                            "choreId": props.chore.choreId,
+                            "roomId": props.room.roomId
+                        });
+
+                        if (data.success) {
+                            props.onUpdate();
+                        }
+                    }
+                },
+            ]
+        )
+
+    }
+
+
     return (
-        <TouchableOpacity style={styles.roomContainer} onPress={hundlePress}>
+        <View style={styles.roomContainer} onPress={hundlePress}>
             <View style={styles.urgencyBar}></View>
             <View style={styles.textContainer}>
                 <Text style={styles.text}>{props.chore.description}</Text>
+                {props.room && props.room.roomName ? <Text style={styles.text}>{props.room.roomName}</Text> : null}
             </View>
             <View style={styles.checkBoxContainer}>
-                <CheckBox value={props.chore.done} onPress={()=>console.log('check')} />
+                <CheckBox value={props.chore.done} onPress={updateChore} />
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }

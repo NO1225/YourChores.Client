@@ -20,7 +20,7 @@ export default function RoomDetailsScreen(props) {
   const [filterState, setFilterState] = useState(choreState.All);
   const [pendingJoinRequest, setPendingJoinRequest] = useState(0);
 
-  const [data, setData] = useState({});
+  const [responseData, setResponseData] = useState({});
   // To change the visibility of the popup
   const [popUpVisible, setPopUpVisible] = useState(false);
   const [selectAlternativePopUpVisible, setSelectAlternativePopUpVisible] = useState(false);
@@ -33,8 +33,9 @@ export default function RoomDetailsScreen(props) {
   const [alternativeId, setAlternativeId] = useState();
 
   const alternativeOptions = () => {
+    console.log('alternativeOptions');
     var options = []
-    data.roomMembers.map(member => {
+    responseData.roomMembers.map(member => {
       options.push({
         value: member.userId,
         text: `${member.firstName} ${member.lastName}`,
@@ -48,9 +49,10 @@ export default function RoomDetailsScreen(props) {
 
   // Get call to get the user info from the api,
   const getRoomDetails = async (state) => {
+    console.log('getRoomDetails');
     var data = await authGet(ApiRoutes.getRoomDetails(props.route.params.roomId));
     if (data.success) {
-      setData(data.response);
+      setResponseData(data.response);
       if (state == choreState.Pending) {
         setChores(await data.response.chores.filter(chore => !chore.done));
       }
@@ -63,27 +65,34 @@ export default function RoomDetailsScreen(props) {
       setPostAllowed(data.response.allowMembersToPost || data.response.isOwner);
       setIsOwner(data.response.isOwner);
 
-      if (data.response.joinRequests) {
-        setPendingJoinRequest(
-          (await data.response.joinRequests.
-            filter(joinRequest => joinRequest.joinRequestType == joinRequestType.Join))
-            .length);
+      if (data.response.isOwner) {
+        if (data.response.joinRequests) {
+          setPendingJoinRequest(
+            (await data.response.joinRequests.
+              filter(joinRequest => joinRequest.joinRequestType == joinRequestType.Join))
+              .length);
 
+        }
+        else {
+          setPendingJoinRequest(0);
+        }
       }
-      else
-      {
+      else{
         setPendingJoinRequest(0);
       }
+
     }
   }
 
   const hundleFilterSelection = (value) => {
+    console.log('hundleFilterSelection')
     setFilterState(value);
     getRoomDetails(value);
 
   }
 
   const openPopUp = () => {
+    console.log('openPopUp')
     // setRoomName('');
     // setAllowMmebersToPost(false);
     setPopUpVisible(true);
@@ -97,6 +106,24 @@ export default function RoomDetailsScreen(props) {
 
     if (data.success) {
       props.navigation.pop();
+    }
+  }
+
+  const hundleChoreCreation = async () => {
+    var data = await authPost(ApiRoutes.createChore, {
+      "roomId": props.route.params.roomId,
+      "description": discription,
+      "urgency": selectedUrgency
+    });
+
+    if (data.success) {
+      getRoomDetails();
+      setPopUpVisible(false);
+    }
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
     }
   }
 
@@ -132,6 +159,7 @@ export default function RoomDetailsScreen(props) {
     const unsubscribe = props.navigation.addListener('focus', () => {
       // The screen is focused
       // Call any action
+      console.log('useEffect');
       getRoomDetails();
 
     });
@@ -166,7 +194,7 @@ export default function RoomDetailsScreen(props) {
                 title="التفاصيل:"
                 placeholder='تفاصيل الواجب' />
               <View style={styles.modelButtonContainer}>
-                <IconButton icon="check" />
+                <IconButton icon="check" onPress={hundleChoreCreation} />
                 <IconButton icon="clear" onPress={() => setPopUpVisible(false)} />
               </View>
             </View>
@@ -206,14 +234,14 @@ export default function RoomDetailsScreen(props) {
           keyExtractor={item => `${item.choreId}`}
           renderItem={({ item }) => {
             return (
-              <ChoreComponent chore={item} onPress={() => console.log(item.choreId)} />
+              <ChoreComponent chore={item} room={{ roomId: props.route.params.roomId }} onUpdate={async () => await getRoomDetails(filterState)} />
             );
           }
           }
         />
         <View style={styles.buttonContainer}>
           <IconButton icon="exit-to-app" onPress={hundleLeaveRequest} />
-          {isOwner ? <IconButton notifications={pendingJoinRequest} icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen, { roomId: props.route.params.roomId})} /> : null}
+          {isOwner ? <IconButton notifications={pendingJoinRequest} icon="settings" onPress={() => props.navigation.navigate(screens.RoomSettingsScreen, { roomId: props.route.params.roomId })} /> : null}
           {postAllowed ? <IconButton icon="playlist-add" onPress={openPopUp} /> : null}
         </View>
       </View>

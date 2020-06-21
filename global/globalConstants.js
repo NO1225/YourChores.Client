@@ -56,9 +56,26 @@ const choreState = {
     }
 }
 
+
+const sortBy = {
+    MostRecent: 1,
+    Urgency: 2,
+    translate: (value) => {
+        switch (value) {
+            case 1:
+            case '1':
+                return "الاحدث";
+            case 2:
+            case '2':
+                return "الاهم";
+
+        }
+    }
+}
+
 const joinRequestType = {
-    Join : 1,
-    Invite : 2,
+    Join: 1,
+    Invite: 2,
     translate: (value) => {
         switch (value) {
             case 1:
@@ -67,7 +84,7 @@ const joinRequestType = {
             case 2:
             case '2':
                 return "دعوة";
-            
+
         }
     }
 }
@@ -86,4 +103,4 @@ const papulateOptions = (enums) => {
 }
 
 
-export { screens, urgency, choreState,joinRequestType, papulateOptions }
+export { screens, urgency, choreState, joinRequestType, sortBy, papulateOptions }
