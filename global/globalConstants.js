@@ -15,6 +15,7 @@ const screens = {
     DrawerNavigationScreen: 'DrawerNavigationScreen',
     LoginScreen: 'loginScreen',
     SignupSCreen: 'signupScreen',
+    WaitingScreen: 'waitingScreen'
 }
 
 const urgency = {

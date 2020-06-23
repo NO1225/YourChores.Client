@@ -1,6 +1,7 @@
 const API_URL = "http://192.168.8.100:5001/";
 
 module.exports = {
+    appVersion : API_URL + "api/appVersion",
 
     register: API_URL + "api/auth/register",
     login: API_URL + "api/auth/login",

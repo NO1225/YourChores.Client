@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { AsyncStorage, I18nManager } from 'react-native';
 import { AppLoading } from 'expo';
+import pkg from './app.json'
 import * as Font from 'expo-font';
 
 import { screens } from './global/globalConstants';
-import { authPost } from './global/apiCalls';
+import { authPost, get } from './global/apiCalls';
 import apiRoutes from './global/apiRoutes';
 
 import SwitchNavigation from './routes/switchNavigation'
@@ -15,6 +16,9 @@ export default function App() {
 
   const [currentScreen, setCurrentScreen] = useState(screens.LoginScreen);
 
+  const [allowEntry, setAllowEntry] = useState(true);
+  const [appVersion, setAppVersion] = useState({});
+
   // Load the fonts 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -24,13 +28,35 @@ export default function App() {
     })
   }
 
+  const checkVersion = async () => {
+    var data = await get(apiRoutes.appVersion);
+
+    if (data.success) {
+      
+
+      if (data.response.version > pkg.expo.version) {
+        setAppVersion(data.response);
+        setCurrentScreen(screens.WaitingScreen);
+        if (data.response.lowestAllowedVersion > pkg.expo.version) {
+          setAllowEntry(false);
+        }
+        else {
+          setAllowEntry(true);
+        }
+      }
+      else {
+        return true;
+      }
+    }
+  }
+
   // Check the current token, and if valid, go directly inside
   const checkToken = async () => {
     var data = await authPost(apiRoutes.tokenLogin, {});
 
     if (data.success) {
       await AsyncStorage.setItem("TOKEN", data.response.token);
-      await AsyncStorage.setItem("USERID",data.response.userId);
+      await AsyncStorage.setItem("USERID", data.response.userId);
 
       setCurrentScreen(screens.DrawerNavigationScreen);
     }
@@ -40,12 +66,19 @@ export default function App() {
   const setup = async () => {
     await I18nManager.forceRTL(false);
     await loadFonts();
-    await checkToken();
+    var cont = await checkVersion();
+
+    if (cont) {
+      await checkToken();
+    }
   }
 
   if (loaded) {
     // Switch navigation
-    return (<SwitchNavigation currentScreen={currentScreen} />)
+    return (<SwitchNavigation
+      currentScreen={currentScreen}
+      allowEntry={allowEntry}
+      appVersion={appVersion} />)
   }
   else {
     return (<AppLoading startAsync={setup} onFinish={() => setLoaded(true)} />)
