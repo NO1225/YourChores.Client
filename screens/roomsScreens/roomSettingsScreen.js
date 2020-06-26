@@ -146,6 +146,22 @@ export default function RoomDetailsScreen(props) {
     }
   }
 
+  const declineRequest = async (requestId) => {
+
+    var data = await authPost(ApiRoutes.declineRequest, {
+      "roomId": props.route.params.roomId,
+      "joinRequestId": requestId
+    });
+
+    if (data.success) {
+      getRoomDetails();
+    }
+    else {
+      var errors = '';
+      data.errors.map(error => { errors = errors + error + '\n' });
+      alert(errors);
+    }
+  }
 
   const cancelInvitation = async (requestId) => {
 
@@ -198,8 +214,9 @@ export default function RoomDetailsScreen(props) {
               keyExtractor={item => item.userId}
               renderItem={({ item }) => {
                 var buttons = [];
-                buttons.push({ icon: "check", method: acceptRequest });
+                buttons.push({ icon: "clear", method: declineRequest });
 
+                buttons.push({ icon: "check", method: acceptRequest });
                 return (
                   <MemberComponent member={item} buttons={buttons} paramSelector={(member) => member.joinRequestId} />
                 );
