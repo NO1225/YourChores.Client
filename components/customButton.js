@@ -16,6 +16,7 @@ export default function CustomButton(props) {
             fontFamily: fonts.almaraiBold,
             fontSize: fontSizes.large,
             color: colors.primaryBackgroundColor,
+            ...props.textStyle
         }
     });
     

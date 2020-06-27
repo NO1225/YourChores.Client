@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Modal, FlatList, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Alert, AsyncStorage } from 'react-native';
 import { AppLoading } from 'expo';
 
 import { authGet, authPost } from '../../global/apiCalls';
@@ -11,6 +11,7 @@ import IconButton from '../../components/customIconButton'
 import TextInput from '../../components/customTextInput'
 import ComboBox from '../../components/customComboBoxComponent'
 import ChoreComponent from '../../components/choreComponent'
+import Modal from '../../components/customModalComponent'
 
 export default function RoomDetailsScreen(props) {
   const [loaded, setLoaded] = useState(false);
@@ -31,11 +32,14 @@ export default function RoomDetailsScreen(props) {
 
 
   const [alternativeId, setAlternativeId] = useState();
-
-  const alternativeOptions = () => {
+  const [alternativeOptions, setAlternativeOptions] = useState([]);
+  const getAlternativeOptions = async (data) => {
     console.log('alternativeOptions');
+    var userId = await AsyncStorage.getItem("USERID");
+
     var options = []
-    responseData.roomMembers.map(member => {
+    data.roomMembers.map(member => {
+      if(member.userId != userId)
       options.push({
         value: member.userId,
         text: `${member.firstName} ${member.lastName}`,
@@ -43,7 +47,7 @@ export default function RoomDetailsScreen(props) {
       })
     })
 
-    return options;
+    setAlternativeOptions(options);
 
   }
 
@@ -53,6 +57,7 @@ export default function RoomDetailsScreen(props) {
     var data = await authGet(ApiRoutes.getRoomDetails(props.route.params.roomId));
     if (data.success) {
       setResponseData(data.response);
+      getAlternativeOptions(data.response);
       if (state == choreState.Pending) {
         setChores(await data.response.chores.filter(chore => !chore.done));
       }
@@ -77,7 +82,7 @@ export default function RoomDetailsScreen(props) {
           setPendingJoinRequest(0);
         }
       }
-      else{
+      else {
         setPendingJoinRequest(0);
       }
 
@@ -129,7 +134,7 @@ export default function RoomDetailsScreen(props) {
 
   const hundleLeaveRequest = async () => {
 
-    if (data.isOwner && data.roomMembers.count == 1) {
+    if (responseData.isOwner && responseData.roomMembers.count == 1) {
       Alert.alert(
         "تأكيد حذف",
         "سيتم حذف الغرفة في حال موافقة",
@@ -145,7 +150,7 @@ export default function RoomDetailsScreen(props) {
         ]
       )
     }
-    else if (data.isOwner && (await data.roomMembers.filter(member => member.isOwner)).length == 1) {
+    else if (responseData.isOwner && (await responseData.roomMembers.filter(member => member.isOwner)).length == 1) {
       setAlternativeId(null);
       setSelectAlternativePopUpVisible(true);
     }
@@ -172,57 +177,49 @@ export default function RoomDetailsScreen(props) {
     return (
       <View style={styles.container}>
         <Modal
-          animationType="slide"
-          transparent={true}
+
           visible={popUpVisible}
-          onRequestClose={() => {
-            console.log("Modal has been closed.");
-          }}
+          setVisible={setPopUpVisible}
+          style={styles.modalView}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>اضافة واجب جديد</Text>
-              <ComboBox
-                title="الاولوية"
-                selected={selectedUrgency}
-                onSelect={(value) => setSelectedUrgency(value)}
-                options={papulateOptions(urgency)} />
-              <TextInput
-                value={discription}
-                onChangeText={(value) => setDiscription(value)}
-                multiline
-                title="التفاصيل:"
-                placeholder='تفاصيل الواجب' />
-              <View style={styles.modelButtonContainer}>
-                <IconButton icon="check" onPress={hundleChoreCreation} />
-                <IconButton icon="clear" onPress={() => setPopUpVisible(false)} />
-              </View>
-            </View>
+
+          <Text style={styles.modalText}>اضافة واجب جديد</Text>
+          <ComboBox
+            title="الاولوية"
+            selected={selectedUrgency}
+            onSelect={(value) => setSelectedUrgency(value)}
+            options={papulateOptions(urgency)} />
+          <TextInput
+            value={discription}
+            onChangeText={(value) => setDiscription(value)}
+            multiline
+            title="التفاصيل:"
+            placeholder='تفاصيل الواجب' />
+          <View style={styles.modelButtonContainer}>
+            <IconButton icon="check" onPress={hundleChoreCreation} />
+            <IconButton icon="clear" onPress={() => setPopUpVisible(false)} />
           </View>
+
         </Modal>
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={selectAlternativePopUpVisible}
-          onRequestClose={() => {
-            console.log("Modal has been closed.");
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>اختيار المالك البديل</Text>
-              <ComboBox
-                title="الاعضاء"
-                selected={alternativeId}
-                onSelect={(value) => setAlternativeId(value)}
-                options={alternativeOptions()} />
 
-              <View style={styles.modelButtonContainer}>
-                <IconButton icon="check" onPress={leave} />
-                <IconButton icon="clear" onPress={() => setSelectAlternativePopUpVisible(false)} />
-              </View>
-            </View>
+          visible={selectAlternativePopUpVisible}
+          setVisible={setSelectAlternativePopUpVisible}
+          style={styles.modalView}
+        >
+
+          <Text style={styles.modalText}>اختيار المالك البديل</Text>
+          <ComboBox
+            title="الاعضاء"
+            selected={alternativeId}
+            onSelect={(value) => setAlternativeId(value)}
+            options={alternativeOptions} />
+
+          <View style={styles.modelButtonContainer}>
+            <IconButton icon="check" onPress={leave} />
+            <IconButton icon="clear" onPress={() => setSelectAlternativePopUpVisible(false)} />
           </View>
+
         </Modal>
         <ComboBox
           buttonStyle={globalStyles.filterSelection}
@@ -275,20 +272,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
+    maxHeight: '100%',
     minWidth: '90%',
     margin: 20,
-    backgroundColor: colors.primaryBackgroundColor,
     borderRadius: 20,
     padding: 15,
     alignItems: "center",
-    shadowColor: colors.primaryFontColor,
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
+    
   },
   modalText: {
     ...globalStyles.text,

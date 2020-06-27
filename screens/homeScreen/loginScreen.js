@@ -55,20 +55,20 @@ export default function LoginScreen(props) {
             <TextInput
               value={userName}
               onChangeText={(value) => setUserName(value)}
-              placeholder='اسم المستخدم' />
+              title='اسم المستخدم' />
 
             <TextInput
               value={passward}
               onChangeText={(value) => setPassward(value)}
               secureTextEntry
-              placeholder='كلمة المرور' />
+              title='كلمة المرور' />
 
         </KeyboardAvoidingView>
         <View style={styles.buttonContainer}>
           <Button title='تسجيل دخول' onPress={hundleLogin}/>          
         </View>
         <View style={styles.buttonContainer}>
-          <Button title='مستخدم جديد؟؟ سجل الان' onPress={()=>props.setCurrentScreen(screens.SignupSCreen)}/>          
+          <Button style={styles.textButton} textStyle={styles.textButtonTitle} title='مستخدم جديد؟؟ سجل الان' onPress={()=>props.setCurrentScreen(screens.SignupSCreen)}/>          
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -91,5 +91,17 @@ const styles = StyleSheet.create({
     maxWidth: '30%',
     resizeMode: "contain"
   },
-  
+  textButton:{
+    padding: 10,
+    paddingHorizontal: 20,
+    backgroundColor: colors.primaryBackgroundColor,
+    borderRadius: 30,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderColor: colors.accent1
+  },
+  textButtonTitle:{   
+    color: colors.accent1,
+  }
+
 });

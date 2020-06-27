@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Modal, StatusBar, FlatList } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { authPost, authGet } from '../global/apiCalls'
@@ -12,6 +12,7 @@ import { colors, globalStyles, fontSizes } from '../global/styleConstants'
 import IconButton from './customIconButton';
 import RequestComponent from './requestComponent';
 import CollabsablePanel from './customCollabsablePanelComponent';
+import Modal from './customModalComponent'
 
 export default function CustomeHeader({ title, navigation }) {
     const [requests, setRequests] = useState([]);
@@ -103,7 +104,11 @@ export default function CustomeHeader({ title, navigation }) {
 
     return (
         <View style={styles.container}>
-            <Modal visible={popUpVisible}>
+            <Modal
+                visible={popUpVisible}
+                setVisible={setPopUpVisible}
+                style={styles.modalView}
+            >
                 <View>
                     <View style={styles.header}>
                         <IconButton style={styles.iconButton} icon="clear" onPress={() => setPopUpVisible(false)} />
@@ -191,5 +196,13 @@ const styles = StyleSheet.create({
     },
     header: {
         padding: 10,
-    }
+    },
+    modalView: {
+        maxHeight: '95%',
+        minWidth: '95%',
+        margin: 20,
+        borderRadius: 0,
+        padding: 15,
+        alignItems: null,
+    },
 })

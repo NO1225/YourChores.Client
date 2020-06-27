@@ -34,11 +34,9 @@ export default function SignupScreen(props) {
       Passward: passward
     })
 
-    console.log(data)
-
     if(data.success)
     {
-      console.log("signed up")
+      props.setCurrentScreen(screens.LoginScreen);
     }
     else
     {
@@ -47,7 +45,6 @@ export default function SignupScreen(props) {
       alert(errors);
     }
 
-    props.setCurrentScreen(screens.DrawerNavigationScreen);
   }
 
 
@@ -60,26 +57,29 @@ export default function SignupScreen(props) {
           <TextInput
             value={userName}
             onChangeText={(value) => setUserName(value)}
-            placeholder='اسم المستخدم' />
+            title='اسم المستخدم' />
           <TextInput
             value={email}
             onChangeText={(value) => setEmail(value)}
-            placeholder='البريد الالكتروني' />
+            title='البريد الالكتروني' />
 
           <TextInput
             value={passward}
             onChangeText={(value) => setPassward(value)}
             secureTextEntry
-            placeholder='كلمة المرور' />
+            title='كلمة المرور' />
           <TextInput
             value={confirmPassward}
             onChangeText={(value) => setConfirmPassward(value)}
             secureTextEntry
-            placeholder='تأكيد كلمة المرور' />
+            title='تأكيد كلمة المرور' />
 
         </KeyboardAvoidingView>
         <View style={styles.buttonContainer}>
-          <Button title='تسجيل دخول' onPress={hundleRegister} />
+          <Button title='انشاء حساب' onPress={hundleRegister} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.textButton} textStyle={styles.textButtonTitle} title='مستخدم جديد؟؟ سجل الان' onPress={()=>props.setCurrentScreen(screens.LoginScreen)}/>          
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -89,18 +89,18 @@ export default function SignupScreen(props) {
 const styles = StyleSheet.create({
   mainContianer: {
     flex: 1,
-    alignItems: "center"
+    alignItems: "center",
   },
   inputsContainer: {
     width: '100%',
     backgroundColor: colors.primaryBackgroundColor
   },
   buttonContainer: {
-    marginTop: 40
+    marginTop: 20
   },
   logo: {
-    marginTop: 40,
-    maxHeight: 100,
+    marginTop: 30,
+    maxHeight: 60,
     maxWidth: '25%',
     resizeMode: "contain"
   },
@@ -108,6 +108,19 @@ const styles = StyleSheet.create({
     fontFamily: fonts.almaraiRegular,
     fontSize: fontSizes.large,
     color: colors.primaryFontColor,
+    paddingBottom: 5
+  },
+  textButton:{
+    padding: 10,
+    paddingHorizontal: 20,
+    backgroundColor: colors.primaryBackgroundColor,
+    borderRadius: 30,
+    borderStyle: "dashed",
+    borderWidth: 1,
+    borderColor: colors.accent1
+  },
+  textButtonTitle:{   
+    color: colors.accent1,
   }
 
 });
