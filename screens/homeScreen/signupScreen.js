@@ -79,7 +79,11 @@ export default function SignupScreen(props) {
           <Button title='انشاء حساب' onPress={hundleRegister} />
         </View>
         <View style={styles.buttonContainer}>
-          <Button style={styles.textButton} textStyle={styles.textButtonTitle} title='مستخدم جديد؟؟ سجل الان' onPress={()=>props.setCurrentScreen(screens.LoginScreen)}/>          
+          <Button 
+          style={styles.textButton} 
+          textStyle={styles.textButtonTitle}
+           title='لديك حساب؟؟ سجل دخول الان!!' 
+           onPress={()=>props.setCurrentScreen(screens.LoginScreen)}/>          
         </View>
       </View>
     </TouchableWithoutFeedback>
