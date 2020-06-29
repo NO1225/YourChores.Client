@@ -98,8 +98,8 @@ export default function RoomDetailsScreen(props) {
 
   const openPopUp = () => {
     console.log('openPopUp')
-    // setRoomName('');
-    // setAllowMmebersToPost(false);
+    setDiscription('');
+    setSelectedUrgency(null);
     setPopUpVisible(true);
   }
 

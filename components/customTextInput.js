@@ -22,7 +22,7 @@ export default function CustomTextInput(props) {
             fontSize: fontSizes.large,
             color: colors.primaryFontColor,
             textAlign: "center",
-            padding: 15,
+            padding: 10,
             paddingHorizontal: 30,
             borderColor: colors.secondaryBackgroundColor,
             borderStyle: "solid",

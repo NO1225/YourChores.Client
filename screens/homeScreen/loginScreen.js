@@ -61,6 +61,7 @@ export default function LoginScreen(props) {
               value={passward}
               onChangeText={(value) => setPassward(value)}
               secureTextEntry
+              autoCapitalize="none"
               title='كلمة المرور' />
 
         </KeyboardAvoidingView>

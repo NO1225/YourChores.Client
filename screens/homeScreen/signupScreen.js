@@ -67,11 +67,13 @@ export default function SignupScreen(props) {
             value={passward}
             onChangeText={(value) => setPassward(value)}
             secureTextEntry
+            autoCapitalize="none"
             title='كلمة المرور' />
           <TextInput
             value={confirmPassward}
             onChangeText={(value) => setConfirmPassward(value)}
             secureTextEntry
+            autoCapitalize="none"
             title='تأكيد كلمة المرور' />
 
         </KeyboardAvoidingView>

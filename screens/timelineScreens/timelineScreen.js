@@ -41,7 +41,7 @@ export default function TimeLineScreen(props) {
           }));
       }
       else {
-        setChores(await data.response);
+        setChores(await data.response.filter(chore => !chore.done));
       }
 
     }

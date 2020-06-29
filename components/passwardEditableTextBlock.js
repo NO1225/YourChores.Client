@@ -74,7 +74,7 @@ export default function CustomeHeader(props) {
         if (editing)
             return (
                     <View style={styles.container}>
-                        <KeyboardAvoidingView style={styles.inputsContainer}>
+                        <KeyboardAvoidingView behavior='padding' style={styles.inputsContainer}>
                             <View style={styles.textContainer}>
                                 <Text style={styles.text}>{"الحالية:"}</Text>
                                 <TextInput inputContainerStyle={styles.inputContainerStyle} value={currentPassward} onChangeText={(value) => setCurrentPassward(value)} secureTextEntry />
