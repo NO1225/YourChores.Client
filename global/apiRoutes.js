@@ -1,4 +1,4 @@
-const API_URL = "http://yourchoresserver-yourchores.apps.us-east-1.starter.openshift-online.com/";
+const API_URL = "http://yourchores.me/";
 //const API_URL = "http://192.168.8.101:8080/";
 
 module.exports = {
